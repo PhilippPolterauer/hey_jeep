@@ -3,6 +3,7 @@ import soundcard as sc
 import numpy as np
 import torch
 import time
+import matplotlib.axes
 import matplotlib.pyplot as plt
 from openwakeword.model import Model
 
@@ -21,16 +22,39 @@ owwmodel = Model(
 )
 
 
+
 fig, ax = plt.subplots()
+ax: matplotlib.axes.Axes
 # the container for the time values
 times = np.arange(-5, 0, 0.08)
 vads = np.zeros_like(times)
 owws = np.zeros_like(times)
 dts = np.zeros_like(times)
 
+vad_p, = ax.plot(
+    times,
+    vads,
+    label="VAD",
+)
+oww_p, = ax.plot(
+    times,
+    owws,
+    label="hey_jeep",
+)
+dt_p, = ax.plot(
+    times,
+    dts,
+    label="compute",
+)
+
+ax.set_ylim(0, 1)  # Adjust the y-axis limits if needed
+ax.set_xlabel("Time")
+leg = ax.legend()
+
+
 SAMPLE_RATE = 16000
 FRAME_TIME_MS = 80
-FRAME_COUNT = SAMPLE_RATE / 1000 * FRAME_TIME_MS  # at 16khz
+FRAME_COUNT = SAMPLE_RATE // 1000 * FRAME_TIME_MS  # at 16khz
 
 
 def push(x, val):
@@ -57,26 +81,11 @@ with default_mic.recorder(
         push(owws, active)
         push(dts, dt / 80)
 
-        # Plot VAD values
-        ax.clear()
-        ax.plot(
-            times,
-            vads,
-            label="VAD",
-        )
-        ax.plot(
-            times,
-            owws,
-            label="hey_jeep",
-        )
-        ax.plot(
-            times,
-            dts,
-            label="compute",
-        )
-        ax.set_ylim(0, 1)  # Adjust the y-axis limits if needed
-        ax.set_xlabel("Time")
-        ax.legend()
+        vad_p.set_ydata(vads)
+        oww_p.set_ydata(owws)
+        dt_p.set_ydata(dts)
+
+
 
         plt.pause(0.001)  # Pause to allow the plot to update
         last = now
