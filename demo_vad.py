@@ -6,7 +6,8 @@ import time
 import matplotlib.axes
 import matplotlib.pyplot as plt
 from openwakeword.model import Model
-
+import librosa
+import threading
 # get the current default speaker on your system:
 default_speaker = sc.default_speaker()
 # get the current default microphone on your system:
@@ -18,10 +19,10 @@ last = time.time()
 # Instantiate the model(s)
 owwmodel = Model(
     wakeword_models=["hey_jeep.tflite"],
-    vad_threshold=0.2,
+    vad_threshold=0.4,
 )
 
-
+bing, sr = librosa.load('bing.mp3')
 
 fig, ax = plt.subplots()
 ax: matplotlib.axes.Axes
@@ -61,6 +62,7 @@ def push(x, val):
     x[:-1] = x[1:]
     x[-1] = val
 
+binging = False
 
 with default_mic.recorder(
     samplerate=16000, channels=1, blocksize=FRAME_COUNT
@@ -85,8 +87,12 @@ with default_mic.recorder(
         oww_p.set_ydata(owws)
         dt_p.set_ydata(dts)
 
-
-
+        if not binging and active>0.5:
+            binging = True
+            threading.Thread(target=default_speaker.play, args=(bing, sr)).start()
+        elif active < 0.5:
+            binging = False
+            
         plt.pause(0.001)  # Pause to allow the plot to update
         last = now
 

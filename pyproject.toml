@@ -16,6 +16,7 @@ torch = {version = "^2.1.2+cpu", source = "pytorch-cpu"}
 torchvision = {version = "^0.16.2+cpu", source = "pytorch-cpu"}
 torchaudio = {version = "^2.1.2+cpu", source = "pytorch-cpu"}
 readchar = "^4.0.5"
+librosa = "^0.10.1"
 
 
 [build-system]
