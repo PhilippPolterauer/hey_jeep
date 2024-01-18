@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "hey-jeep"
+version = "0.1.0"
+description = ""
+authors = ["Philipp Polterauer <philipp.polterauer@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">3.10, <3.11"
+sounddevice = "^0.4.6"
+soundcard = "^0.4.2"
+openwakeword = "^0.5.1"
+matplotlib = "^3.8.2"
+ipykernel = "^6.29.0"
+torch = {version = "^2.1.2+cpu", source = "pytorch-cpu"}
+torchvision = {version = "^0.16.2+cpu", source = "pytorch-cpu"}
+torchaudio = {version = "^2.1.2+cpu", source = "pytorch-cpu"}
+readchar = "^4.0.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "supplemental"
